@@ -1,0 +1,60 @@
+package parking;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class Parking {
+    private String type;
+    private int capacity;
+    private List<Car> data;
+
+    public Parking(String type, int capacity) {
+        this.type = type;
+        this.capacity = capacity;
+        this.data = new ArrayList<>();
+    }
+    public void add(Car car){
+        if(data.size() < capacity){
+            data.add(car);
+        }
+    }
+    public boolean remove(String manufacturer, String model){
+        return data.removeIf(car -> {
+            return (car.getManufacturer().equals(manufacturer) && car.getModel().equals(model));
+        });
+    }
+    public Car getLatestCar(){
+        if(!data.isEmpty()){
+            List<Car> dataSecond = data.stream().sorted((c1 , c2) -> c2.getYear() - c1.getYear()).collect(Collectors.toCollection(LinkedList::new));
+            return dataSecond.get(0);
+        }
+//        another way
+//        Object a = list.get(0);
+//        for(Object c of list)
+//        if(c.getDate() > a.getDate()) a = c;
+        return null;
+    }
+    public Car getCar(String manufacturer, String model) {
+        for (Car car : data) {
+            if (car.getModel().equals(model) && car.getManufacturer().equals(manufacturer)){
+                return car;
+            }
+        }
+        return null;
+    }
+    public int getCount(){
+        return data.size();
+    }
+    public String getStatistics(){
+        StringBuilder out = new StringBuilder();
+        out.append("The cars are parked in ").append(this.type).append(":").append(System.lineSeparator());
+        for (Car car : data) {
+            out.append(car.toString()).append(System.lineSeparator());
+        }
+        return out.toString().trim();
+
+    }
+}
